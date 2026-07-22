@@ -57,8 +57,9 @@ moOde Audio Player: Designed to complement the open-source audio ecosystem devel
 Developed with AI assistance and collaborative engineering support via Gemini AI.
 
 ```text
-/var/www/html/
-├── rack_master.html          # Main Hi-Fi Rack master wrapper
-├── index.php                 # Native moOde Audio player
-└── vumeter/index.html        # Dynamic VU Meter module
+/var/www/
+        ├── rack_master.html            # Main Hi-Fi Rack master wrapper
+        ├── index.php                   # Native moOde Audio player
+        └── vumeter/
+                   └──index.html        # Dynamic VU Meter module
 
