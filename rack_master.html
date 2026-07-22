@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hi-Fi Rack Master System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #050505;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+    }
+
+    /* STRUTTURA RACK HI-FI */
+    .hifi-rack {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      gap: 10px;
+      background: #0a0a0a;
+    }
+
+    /* MODULO SUPERIORE: moOde Audio (35% altezza) */
+    .rack-unit-top {
+      flex: 45;
+      width: 100%;
+      background: #121212;
+      border: 2px solid #222;
+      border-radius: 6px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease-in-out;
+    }
+
+    /* MODULO INFERIORE: VU Meter (65% altezza) */
+    .rack-unit-bottom {
+      flex: 55;
+      width: 100%;
+      background: #121212;
+      border: 2px solid #222;
+      border-radius: 6px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease-in-out;
+    }
+
+    /* MODALITÀ TUTTO SCHERMO PER QUALSIASI UNITA' */
+    .rack-unit-top.expanded,
+    .rack-unit-bottom.expanded {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      border: none;
+      border-radius: 0;
+    }
+
+    .rack-unit-top iframe,
+    .rack-unit-bottom iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: transparent;
+    }
+
+    /* BASE COMUNE PULSANTI OVERLAY */
+    .expand-btn {
+      position: absolute;
+      z-index: 10000;
+      background: rgba(0, 0, 0, 0.75);
+      color: #00ffcc;
+      border: 1px solid #00ffccaa;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      backdrop-filter: blur(4px);
+    }
+
+    /* POSIZIONAMENTO SEPARATO PER NON SOVRAPPORSI */
+    /* Modulo Superiore: Pulsante in BASSO a destra */
+    .btn-top-unit {
+      bottom: 10px;
+      right: 10px;
+    }
+
+    /* Modulo Inferiore: Pulsante in ALTO a destra */
+    .btn-bottom-unit {
+      top: 10px;
+      right: 10px;
+    }
+
+    .expand-btn:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hifi-rack">
+    
+    <!-- UNITA' SUPERIORE: moOde Audio Player (index.php) -->
+    <div class="rack-unit-top" id="moode-unit">
+      <button class="expand-btn btn-top-unit" id="moode-btn" onclick="toggleMoodeExpansion()">Espandi moOde ⚙️</button>
+      <iframe src="index.php" scrolling="auto"></iframe>
+    </div>
+
+    <!-- UNITA' INFERIORE: VU Meter Display -->
+    <div class="rack-unit-bottom" id="vumeter-unit">
+      <button class="expand-btn btn-bottom-unit" id="vumeter-btn" onclick="toggleVUExpansion()">Controlli VU ⚙️</button>
+      <iframe src="vumeter/index.html" scrolling="auto"></iframe>
+    </div>
+
+  </div>
+
+  <script>
+    // Toggle espansione Modulo moOde Audio
+    function toggleMoodeExpansion() {
+      const unit = document.getElementById('moode-unit');
+      const btn = document.getElementById('moode-btn');
+      
+      unit.classList.toggle('expanded');
+
+      if (unit.classList.contains('expanded')) {
+        btn.textContent = 'Torna al Rack ✖';
+        btn.style.borderColor = '#ff3366';
+        btn.style.color = '#ff3366';
+      } else {
+        btn.textContent = 'Espandi moOde ⚙️';
+        btn.style.borderColor = '#00ffccaa';
+        btn.style.color = '#00ffcc';
+      }
+    }
+
+    // Toggle espansione Modulo VU Meter
+    function toggleVUExpansion() {
+      const unit = document.getElementById('vumeter-unit');
+      const btn = document.getElementById('vumeter-btn');
+      
+      unit.classList.toggle('expanded');
+
+      if (unit.classList.contains('expanded')) {
+        btn.textContent = 'Torna al Rack ✖';
+        btn.style.borderColor = '#ff3366';
+        btn.style.color = '#ff3366';
+      } else {
+        btn.textContent = 'Controlli VU ⚙️';
+        btn.style.borderColor = '#00ffccaa';
+        btn.style.color = '#00ffcc';
+      }
+    }
+  </script>
+</body>
+</html>
