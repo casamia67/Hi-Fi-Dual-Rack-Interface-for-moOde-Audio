@@ -56,6 +56,22 @@ moOde Audio Player: Designed to complement the open-source audio ecosystem devel
 
 Developed with AI assistance and collaborative engineering support via Gemini AI.
 
+
+## 📖 Installation Guide
+
+### 1. Prerequisites
+
+* An active **moOde Audio** system accessible on your local network.
+* **SSH** or **SFTP** access to the host device (e.g., Raspberry Pi).
+* A tablet or display device (**Fully Kiosk Browser** recommended).
+
+---
+
+### 2. File Placement & Permissions
+
+1. Connect to your system via SSH or SFTP.
+2. Transfer `rack_master.html` and your VU Meter module folder into the moOde web root directory:
+
 ```text
 /var/www/
         ├── rack_master.html            # Main Hi-Fi Rack master wrapper
