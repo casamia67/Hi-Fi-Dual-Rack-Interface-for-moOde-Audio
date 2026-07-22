@@ -54,7 +54,7 @@ You are free to use, modify, distribute, and integrate this software into open-s
 💡 Credits & Acknowledgments
 moOde Audio Player: Designed to complement the open-source audio ecosystem developed by Tim Curtis and contributors (moodeaudio.org).
 
-Developed with AI assistance and collaborative engineering support via Gemini AI.
+Developed with AI assistance and collaborative engineering.
 
 
 ## 📖 Installation Guide
