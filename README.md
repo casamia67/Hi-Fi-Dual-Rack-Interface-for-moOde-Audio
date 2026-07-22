@@ -1,4 +1,4 @@
-# Hi-Fi Dual-Rack Interface for moOde Audio
+# Hi-Fi Dual-Rack Interface for moOde Audio VU meter
 
 A modular, dual-frame vertical Hi-Fi Rack wrapper designed for **moOde Audio Player** on Raspberry Pi. Engineered specifically for dedicated tablet displays (e.g., using Fully Kiosk Browser) and touchscreen kiosks.
 
