@@ -46,8 +46,19 @@ The system is built as a zero-dependency, lightweight web wrapper (`rack_master.
 
 Place `rack_master.html` alongside your native moOde files in the webroot directory (`/var/www/html/`):
 
+📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+You are free to use, modify, distribute, and integrate this software into open-source or commercial projects with minimal restriction.
+
+💡 Credits & Acknowledgments
+moOde Audio Player: Designed to complement the open-source audio ecosystem developed by Tim Curtis and contributors (moodeaudio.org).
+
+Developed with AI assistance and collaborative engineering support via Gemini AI.
+
 ```text
 /var/www/html/
 ├── rack_master.html    # Main Hi-Fi Rack master wrapper
 ├── index.php           # Native moOde Audio player
 └── vumeter.html        # Dynamic VU Meter module
+
