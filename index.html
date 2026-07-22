@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Hi-Fi Authentic Wattmeter & VU Collection</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #eee;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .mac-faceplate {
+            background: linear-gradient(145deg, #181818 0%, #0d0d0d 100%);
+            padding: 35px 45px;
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.95), inset 0 1px 2px rgba(255,255,255,0.15);
+            border: 4px solid #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .heatsink-panel {
+            height: 48px;
+            margin-bottom: 25px;
+            background: #111;
+            border-radius: 6px;
+            border: 1px solid #262626;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.9), 0 1px 2px rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            padding: 4px 0;
+            box-sizing: border-box;
+            transition: width 0.3s ease;
+        }
+        .fin {
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #1c1c1c 0%, #333333 30%, #161616 50%, #2c2c2c 80%, #111111 100%);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.12);
+        }
+
+        .brand-logo {
+            font-family: "Times New Roman", Times, serif;
+            font-weight: bold;
+            font-size: 26px;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            text-transform: lowercase;
+            font-style: italic;
+            transition: all 0.3s ease;
+        }
+        .brand-logo.mcintosh {
+            color: #00e676;
+            text-shadow: 0 0 12px rgba(0, 230, 118, 0.6);
+        }
+        .brand-logo.vintage {
+            color: #d4af37;
+            font-family: sans-serif;
+            font-style: normal;
+            font-size: 20px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+        }
+        .brand-logo.ashdown {
+            color: #ff6d00;
+            font-family: sans-serif;
+            font-style: normal;
+            font-size: 20px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 109, 0, 0.6);
+        }
+        .brand-logo.waves {
+            color: #b0bec5;
+            font-family: sans-serif;
+            font-style: normal;
+            font-size: 18px;
+            letter-spacing: 6px;
+            text-shadow: 0 0 10px rgba(176, 190, 197, 0.4);
+        }
+        .brand-logo.picore {
+            color: #e3ea28;
+            font-family: sans-serif;
+            font-style: normal;
+            font-size: 18px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(227, 234, 40, 0.6);
+        }
+        .brand-logo.accuphase {
+            color: #ffb300;
+            font-family: "Times New Roman", serif;
+            font-style: normal;
+            font-size: 22px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(255, 179, 0, 0.6);
+        }
+        .brand-logo.revox {
+            color: #e0e0e0;
+            font-family: sans-serif;
+            font-style: normal;
+            font-size: 20px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+        .brand-logo.luxman {
+            color: #ffca28;
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+            font-size: 22px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 202, 40, 0.6);
+        }
+        .brand-logo.technics {
+            color: #00e5ff;
+            font-family: sans-serif;
+            font-style: normal;
+            font-size: 20px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+        }
+
+        .meters-container {
+            display: flex;
+            gap: 35px;
+        }
+        canvas {
+            border-radius: 4px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.9), inset 0 0 25px rgba(0,0,0,0.95);
+            border: 2px solid #000;
+        }
+        .status-bar {
+            margin-top: 15px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 11px;
+            color: #555;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #333;
+            transition: all 0.3s ease;
+        }
+        .status-dot.active {
+            background-color: #00e676;
+            box-shadow: 0 0 10px #00e676;
+        }
+        button.gear {
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #888;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        button.gear:hover { background: #262626; color: #fff; }
+
+        #configModal {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 5, 0.96);
+            border-radius: 18px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .config-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 80%;
+            max-width: 320px;
+        }
+        .config-box label {
+            font-size: 11px;
+            color: #888;
+            letter-spacing: 1px;
+        }
+        .config-box input, .config-box select {
+            padding: 10px;
+            background: #151515;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .volume-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .volume-row input[type="range"] {
+            flex: 1;
+            padding: 0;
+            accent-color: #1e88e5;
+        }
+        .config-box button.save-btn {
+            padding: 12px;
+            background: #1e88e5;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .config-box button.save-btn:hover { background: #1565c0; }
+    </style>
+</head>
+<body>
+
+    <div class="mac-faceplate">
+        
+        <div class="heatsink-panel" id="heatsink">
+            <div class="fin"></div>
+            <div class="fin"></div>
+            <div class="fin"></div>
+            <div class="fin"></div>
+            <div class="fin"></div>
+        </div>
+
+        <div class="meters-container">
+            <canvas id="vuLeft"></canvas>
+            <canvas id="vuRight"></canvas>
+        </div>
+
+        <div class="brand-logo mcintosh" id="brandLogo">mcintosh</div>
+
+        <div class="status-bar">
+            <div id="statusDot" class="status-dot"></div>
+            <span id="statusText">ATTESA BUFFERING...</span>
+            <button id="configBtn" class="gear" title="Impostazioni">⚙️</button>
+        </div>
+
+        <audio id="audioStream" crossorigin="anonymous" preload="auto" autoplay></audio>
+
+        <div id="configModal">
+            <div class="config-box">
+                <label for="streamUrlInput">URL STREAMING MOODE</label>
+                <input type="text" id="streamUrlInput" placeholder="http://192.168.x.x:8000/stream">
+                
+                <label for="styleSelect">STILE METER</label>
+                <select id="styleSelect">
+                    <option value="picore">piCorePlayer Touch VU (Iconic Yellow)</option>
+                    <option value="mcintosh" selected>McIntosh Blue Classic</option>
+                    <option value="accuphase">Accuphase Champagne & Amber</option>
+                    <option value="revox">Revox Studio Anthracite</option>
+                    <option value="luxman">Luxman Warm Amber Minimal</option>
+                    <option value="technics">Technics VFD Peak Meter (Anni '80)</option>
+                    <option value="waves">Waves Studio VU (Rack Analogico)</option>
+                    <option value="ashdown">Ashdown Engineering VU</option>
+                    <option value="vintage">Studio Vintage / Classic VU</option>
+                </select>
+
+                <label for="resolutionSelect">RISOLUZIONE</label>
+                <select id="resolutionSelect">
+                    <option value="compact">Compatta (320x190)</option>
+                    <option value="tablet" selected>Lenovo / Tablet (440x250)</option>
+                    <option value="large">Grande (540x310)</option>
+                </select>
+
+                <label>VOLUME AUDIO BROWSER</label>
+                <div class="volume-row">
+                    <input type="range" id="volumeRange" min="0" max="1" step="0.05" value="1">
+                    <button type="button" id="muteBtn" class="gear" style="padding: 8px 12px;">🔊 Mute</button>
+                </div>
+
+                <button id="saveConfigBtn" class="save-btn">SALVA E APPLICA</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audioStream');
+        const configBtn = document.getElementById('configBtn');
+        const configModal = document.getElementById('configModal');
+        const saveConfigBtn = document.getElementById('saveConfigBtn');
+        const streamUrlInput = document.getElementById('streamUrlInput');
+        const styleSelect = document.getElementById('styleSelect');
+        const resolutionSelect = document.getElementById('resolutionSelect');
+        const volumeRange = document.getElementById('volumeRange');
+        const muteBtn = document.getElementById('muteBtn');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const heatsink = document.getElementById('heatsink');
+        const brandLogo = document.getElementById('brandLogo');
+
+        const canvasL = document.getElementById('vuLeft');
+        const canvasR = document.getElementById('vuRight');
+        const ctxL = canvasL.getContext('2d');
+        const ctxR = canvasR.getContext('2d');
+
+        let savedUrl = localStorage.getItem('moode_stream_url') || "http://192.168.188.53:8000/stream";
+        let savedStyle = localStorage.getItem('moode_vu_style') || "mcintosh";
+        let savedRes = localStorage.getItem('moode_vu_res') || "tablet";
+        let savedVol = localStorage.getItem('moode_vu_vol');
+        if (savedVol === null) savedVol = 1;
+
+        streamUrlInput.value = savedUrl;
+        styleSelect.value = savedStyle;
+        resolutionSelect.value = savedRes;
+        volumeRange.value = savedVol;
+
+        let isMuted = false;
+
+        function updateUITheme(style) {
+            brandLogo.className = "brand-logo " + style;
+            if (style === 'vintage') {
+                brandLogo.textContent = "STUDIO";
+            } else if (style === 'ashdown') {
+                brandLogo.textContent = "ASHDOWN";
+            } else if (style === 'waves') {
+                brandLogo.textContent = "WAVES STUDIO RACK";
+            } else if (style === 'picore') {
+                brandLogo.textContent = "piCorePlayer";
+            } else if (style === 'accuphase') {
+                brandLogo.textContent = "ACCUPHASE";
+            } else if (style === 'revox') {
+                brandLogo.textContent = "REVOX";
+            } else if (style === 'luxman') {
+                brandLogo.textContent = "LUXMAN";
+            } else if (style === 'technics') {
+                brandLogo.textContent = "TECHNICS STEREO";
+            } else {
+                brandLogo.textContent = "mcintosh";
+            }
+        }
+
+        function applyResolution(resType) {
+            let w, h;
+            if (resType === 'compact') { w = 320; h = 190; }
+            else if (resType === 'large') { w = 540; h = 310; }
+            else { w = 440; h = 250; }
+
+            canvasL.width = w; canvasL.height = h;
+            canvasR.width = w; canvasR.height = h;
+
+            let totalWidth = (w * 2) + 35;
+            heatsink.style.width = totalWidth + 'px';
+        }
+
+        applyResolution(savedRes);
+        updateUITheme(savedStyle);
+
+        configBtn.addEventListener('click', () => {
+            configModal.style.display = 'flex';
+        });
+
+        let audioCtx, analyser, source, gainNode;
+        let isInitialized = false;
+        let corsFallbackMode = false;
+
+        function initAudioContext() {
+            if (isInitialized) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                gainNode = audioCtx.createGain();
+                
+                source.connect(analyser);
+                source.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                gainNode.gain.value = parseFloat(volumeRange.value);
+                updateMuteButtonUI();
+
+                analyser.fftSize = 256;
+                isInitialized = true;
+                corsFallbackMode = false;
+            } catch (e) {
+                corsFallbackMode = true;
+                isInitialized = true;
+            }
+        }
+
+        volumeRange.addEventListener('input', () => {
+            let val = parseFloat(volumeRange.value);
+            if (isMuted && val > 0) {
+                isMuted = false;
+            }
+            if (gainNode) {
+                gainNode.gain.value = isMuted ? 0 : val;
+            }
+            updateMuteButtonUI();
+        });
+
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            if (gainNode) {
+                gainNode.gain.value = isMuted ? 0 : parseFloat(volumeRange.value);
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            updateMuteButtonUI();
+        });
+
+        function updateMuteButtonUI() {
+            if (isMuted) {
+                muteBtn.textContent = "🔇 Unmute";
+                muteBtn.style.borderColor = "#c62828";
+                statusText.textContent = "IN ESECUZIONE (MUTED)";
+            } else {
+                muteBtn.textContent = "🔊 Mute";
+                muteBtn.style.borderColor = "#333";
+                statusText.textContent = "IN RIPRODUZIONE AUDIO ATTIVO";
+            }
+        }
+
+        saveConfigBtn.addEventListener('click', () => {
+            let newUrl = streamUrlInput.value.trim();
+            let newStyle = styleSelect.value;
+            let newRes = resolutionSelect.value;
+            let newVol = volumeRange.value;
+            
+            if (newUrl) {
+                localStorage.setItem('moode_stream_url', newUrl);
+                audio.src = newUrl;
+                audio.load();
+                audio.play();
+            }
+            
+            localStorage.setItem('moode_vu_style', newStyle);
+            localStorage.setItem('moode_vu_res', newRes);
+            localStorage.setItem('moode_vu_vol', newVol);
+            
+            if (gainNode && !isMuted) {
+                gainNode.gain.value = parseFloat(newVol);
+            }
+
+            applyResolution(newRes);
+            updateUITheme(newStyle);
+            configModal.style.display = 'none';
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (savedUrl) {
+                audio.src = savedUrl;
+                audio.load();
+                audio.play().then(() => {
+                    initAudioContext();
+                    if (audioCtx && audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    statusDot.classList.add('active');
+                    updateMuteButtonUI();
+                }).catch(e => {
+                    console.log("Autoplay iniziale in attesa di interazione/permessi:", e);
+                });
+            }
+        });
+
+        audio.addEventListener('canplay', () => {
+            initAudioContext();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            audio.play().then(() => {
+                statusDot.classList.add('active');
+                updateMuteButtonUI();
+            }).catch(e => {
+                console.log("Riproduzione condizionata da policy:", e);
+            });
+        });
+
+        audio.addEventListener('playing', () => {
+            statusDot.classList.add('active');
+            updateMuteButtonUI();
+        });
+
+        audio.addEventListener('waiting', () => {
+            statusText.textContent = "BUFFERING STREAM...";
+        });
+
+        audio.addEventListener('stalled', () => {
+            statusDot.classList.remove('active');
+            statusText.textContent = "CONNESSIONE IN ATTESA...";
+        });
+
+        function drawFace(ctx, style) {
+            const w = ctx.canvas.width;
+            const h = ctx.canvas.height;
+            ctx.clearRect(0, 0, w, h);
+            
+            let scaleRatio = w / 440;
+
+            if (style === 'accuphase') {
+                // ACCUPHASE CHAMPAGNE GOLD & AMBER BACKLIGHT
+                let bgGrad = ctx.createRadialGradient(w/2, h*0.5, 5, w/2, h*0.5, h * 0.95);
+                bgGrad.addColorStop(0, "#f9f2d9");
+                bgGrad.addColorStop(0.5, "#e6dcbf");
+                bgGrad.addColorStop(1, "#c2b493");
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.strokeStyle = "#403825";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(3, 3, w - 6, h - 6);
+
+                let cx = w / 2, cy = h * 1.55, radius = h * 1.25;
+                ctx.strokeStyle = "#2b2416";
+                ctx.lineWidth = Math.max(1.2, w / 300);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, Math.PI * 1.30, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.lineWidth = 1;
+                for (let a = 1.30; a <= 1.70; a += 0.01) {
+                    let tickLen = (a % 0.05 < 0.005) ? (h * 0.04) : (h * 0.02);
+                    let x1 = cx + radius * Math.cos(Math.PI * a);
+                    let y1 = cy + radius * Math.sin(Math.PI * a);
+                    let x2 = cx + (radius - tickLen) * Math.cos(Math.PI * a);
+                    let y2 = cy + (radius - tickLen) * Math.sin(Math.PI * a);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                }
+
+                ctx.strokeStyle = "#d60000";
+                ctx.lineWidth = Math.max(3.2, w / 160);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius - (h * 0.02), Math.PI * 1.59, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.fillStyle = "#2b2416";
+                ctx.textAlign = "center";
+                ctx.font = `bold ${Math.round(10 * scaleRatio)}px sans-serif`;
+                let vValues = ["-50", "-30", "-20", "-10", "-5", "-3", "-2", "-1", "0", "+3", "+5"];
+                let vAngles = [1.32, 1.38, 1.42, 1.46, 1.50, 1.53, 1.56, 1.59, 1.62, 1.65, 1.68];
+                for (let i = 0; i < vValues.length; i++) {
+                    let ang = vAngles[i];
+                    let x = cx + (radius - (h * 0.13)) * Math.cos(Math.PI * ang);
+                    let y = cy + (radius - (h * 0.13)) * Math.sin(Math.PI * ang);
+                    ctx.fillText(vValues[i], x, y);
+                }
+
+                ctx.save();
+                ctx.font = `bold ${Math.round(13 * scaleRatio)}px "Times New Roman", serif`;
+                ctx.fillStyle = "#2b2416";
+                ctx.fillText("Accuphase", cx, h * 0.62);
+
+                ctx.font = `bold ${Math.round(14 * scaleRatio)}px sans-serif`;
+                ctx.fillText("VU", cx, h * 0.78);
+                ctx.restore();
+
+                let glassGrad = ctx.createLinearGradient(0, 0, w, h);
+                glassGrad.addColorStop(0, "rgba(255, 255, 255, 0.3)");
+                glassGrad.addColorStop(0.4, "rgba(255, 200, 100, 0.08)");
+                glassGrad.addColorStop(1, "rgba(0, 0, 0, 0.15)");
+                ctx.fillStyle = glassGrad;
+                ctx.fillRect(0, 0, w, h);
+
+            } else if (style === 'revox') {
+                // REVOX STUDIO ANTHRACITE
+                let bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+                bgGrad.addColorStop(0, "#2c2f33");
+                bgGrad.addColorStop(0.5, "#232629");
+                bgGrad.addColorStop(1, "#181a1c");
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.strokeStyle = "#111";
+                ctx.lineWidth = 3;
+                ctx.strokeRect(3, 3, w - 6, h - 6);
+
+                let cx = w / 2, cy = h * 1.55, radius = h * 1.25;
+                ctx.strokeStyle = "#e0e0e0";
+                ctx.lineWidth = Math.max(1.2, w / 300);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, Math.PI * 1.30, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.lineWidth = 1;
+                for (let a = 1.30; a <= 1.70; a += 0.01) {
+                    let tickLen = (a % 0.05 < 0.005) ? (h * 0.04) : (h * 0.02);
+                    let x1 = cx + radius * Math.cos(Math.PI * a);
+                    let y1 = cy + radius * Math.sin(Math.PI * a);
+                    let x2 = cx + (radius - tickLen) * Math.cos(Math.PI * a);
+                    let y2 = cy + (radius - tickLen) * Math.sin(Math.PI * a);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                }
+
+                ctx.strokeStyle = "#ff3d00";
+                ctx.lineWidth = Math.max(3.2, w / 160);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius - (h * 0.02), Math.PI * 1.59, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.fillStyle = "#e0e0e0";
+                ctx.textAlign = "center";
+                ctx.font = `bold ${Math.round(10 * scaleRatio)}px sans-serif`;
+                let vValues = ["-20", "-10", "-7", "-5", "-3", "-2", "-1", "0", "+1", "+2", "+3"];
+                let vAngles = [1.32, 1.38, 1.42, 1.46, 1.50, 1.53, 1.56, 1.59, 1.62, 1.65, 1.68];
+                for (let i = 0; i < vValues.length; i++) {
+                    let ang = vAngles[i];
+                    let x = cx + (radius - (h * 0.13)) * Math.cos(Math.PI * ang);
+                    let y = cy + (radius - (h * 0.13)) * Math.sin(Math.PI * ang);
+                    ctx.fillText(vValues[i], x, y);
+                }
+
+                ctx.save();
+                ctx.font = `bold ${Math.round(14 * scaleRatio)}px sans-serif`;
+                ctx.fillStyle = "#00e676";
+                ctx.fillText("STUDIO", cx, h * 0.62);
+
+                ctx.fillStyle = "#e0e0e0";
+                ctx.font = `bold ${Math.round(12 * scaleRatio)}px sans-serif`;
+                ctx.fillText("REVOX", cx, h * 0.78);
+                ctx.restore();
+
+                let glassGrad = ctx.createLinearGradient(0, 0, w, h);
+                glassGrad.addColorStop(0, "rgba(255, 255, 255, 0.15)");
+                glassGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.02)");
+                glassGrad.addColorStop(1, "rgba(0, 0, 0, 0.3)");
+                ctx.fillStyle = glassGrad;
+                ctx.fillRect(0, 0, w, h);
+
+            } else if (style === 'luxman') {
+                // LUXMAN WARM AMBER MINIMAL
+                let bgGrad = ctx.createRadialGradient(w/2, h*0.5, 5, w/2, h*0.5, h * 0.95);
+                bgGrad.addColorStop(0, "#332615");
+                bgGrad.addColorStop(0.5, "#21180d");
+                bgGrad.addColorStop(1, "#100b06");
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.strokeStyle = "#42321c";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(3, 3, w - 6, h - 6);
+
+                let cx = w / 2, cy = h * 1.55, radius = h * 1.25;
+                ctx.strokeStyle = "#ffca28";
+                ctx.lineWidth = Math.max(1.2, w / 300);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, Math.PI * 1.30, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.lineWidth = 1;
+                for (let a = 1.30; a <= 1.70; a += 0.01) {
+                    let tickLen = (a % 0.05 < 0.005) ? (h * 0.04) : (h * 0.02);
+                    let x1 = cx + radius * Math.cos(Math.PI * a);
+                    let y1 = cy + radius * Math.sin(Math.PI * a);
+                    let x2 = cx + (radius - tickLen) * Math.cos(Math.PI * a);
+                    let y2 = cy + (radius - tickLen) * Math.sin(Math.PI * a);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                }
+
+                ctx.strokeStyle = "#ff3d00";
+                ctx.lineWidth = Math.max(3.2, w / 160);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius - (h * 0.02), Math.PI * 1.59, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.fillStyle = "#ffca28";
+                ctx.textAlign = "center";
+                ctx.font = `${Math.round(10 * scaleRatio)}px sans-serif`;
+                let vValues = ["-20", "-10", "-5", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+5"];
+                let vAngles = [1.32, 1.38, 1.42, 1.46, 1.50, 1.53, 1.56, 1.59, 1.62, 1.65, 1.68];
+                for (let i = 0; i < vValues.length; i++) {
+                    let ang = vAngles[i];
+                    let x = cx + (radius - (h * 0.13)) * Math.cos(Math.PI * ang);
+                    let y = cy + (radius - (h * 0.13)) * Math.sin(Math.PI * ang);
+                    ctx.fillText(vValues[i], x, y);
+                }
+
+                ctx.save();
+                ctx.font = `italic 300 ${Math.round(16 * scaleRatio)}px "Times New Roman", serif`;
+                ctx.fillStyle = "#ffca28";
+                ctx.fillText("Luxman", cx, h * 0.70);
+                ctx.restore();
+
+                let glassGrad = ctx.createLinearGradient(0, 0, w, h);
+                glassGrad.addColorStop(0, "rgba(255, 202, 40, 0.15)");
+                glassGrad.addColorStop(0.5, "rgba(255, 202, 40, 0.02)");
+                glassGrad.addColorStop(1, "rgba(0, 0, 0, 0.4)");
+                ctx.fillStyle = glassGrad;
+                ctx.fillRect(0, 0, w, h);
+
+            } else if (style === 'picore') {
+                // piCorePlayer Touch Iconic Yellow Style
+                let bgGrad = ctx.createRadialGradient(w/2, h*0.5, 5, w/2, h*0.5, h * 0.95);
+                bgGrad.addColorStop(0, "#f7fd52");
+                bgGrad.addColorStop(0.5, "#e3ea28");
+                bgGrad.addColorStop(1, "#a8ae10");
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.strokeStyle = "#1a160d";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(3, 3, w - 6, h - 6);
+
+                let cx = w / 2, cy = h * 1.55, radius = h * 1.25;
+                ctx.strokeStyle = "#1a160d";
+                ctx.lineWidth = Math.max(1.2, w / 300);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, Math.PI * 1.30, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.lineWidth = 1;
+                for (let a = 1.30; a <= 1.70; a += 0.01) {
+                    let tickLen = (a % 0.05 < 0.005) ? (h * 0.04) : (h * 0.02);
+                    let x1 = cx + radius * Math.cos(Math.PI * a);
+                    let y1 = cy + radius * Math.sin(Math.PI * a);
+                    let x2 = cx + (radius - tickLen) * Math.cos(Math.PI * a);
+                    let y2 = cy + (radius - tickLen) * Math.sin(Math.PI * a);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                }
+
+                ctx.strokeStyle = "#d60000";
+                ctx.lineWidth = Math.max(3.2, w / 160);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius - (h * 0.02), Math.PI * 1.59, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.fillStyle = "#111";
+                ctx.textAlign = "center";
+                ctx.font = `bold ${Math.round(10 * scaleRatio)}px sans-serif`;
+                let vValues = ["20", "10", "7", "5", "3", "2", "1", "0", "1", "2", "3"];
+                let vAngles = [1.32, 1.38, 1.42, 1.46, 1.50, 1.53, 1.56, 1.59, 1.62, 1.65, 1.68];
+                for (let i = 0; i < vValues.length; i++) {
+                    let ang = vAngles[i];
+                    let x = cx + (radius - (h * 0.13)) * Math.cos(Math.PI * ang);
+                    let y = cy + (radius - (h * 0.13)) * Math.sin(Math.PI * ang);
+                    ctx.fillText(vValues[i], x, y);
+                }
+
+                ctx.font = `bold ${Math.round(16 * scaleRatio)}px sans-serif`;
+                ctx.fillStyle = "#111";
+                ctx.fillText("-", w * 0.15, h * 0.70);
+                ctx.fillStyle = "#d60000";
+                ctx.fillText("+", w * 0.85, h * 0.70);
+
+                ctx.save();
+                ctx.font = `italic 500 ${Math.round(12 * scaleRatio)}px "Georgia", serif`;
+                ctx.fillStyle = "#333";
+                ctx.textAlign = "center";
+                ctx.fillText("piCorePlayer Touch", cx, h * 0.62);
+
+                ctx.font = `bold ${Math.round(15 * scaleRatio)}px sans-serif`;
+                ctx.fillStyle = "#111";
+                ctx.fillText("VU", cx, h * 0.78);
+                ctx.restore();
+
+                let glassGrad = ctx.createLinearGradient(0, 0, w, h);
+                glassGrad.addColorStop(0, "rgba(255, 255, 255, 0.25)");
+                glassGrad.addColorStop(0.4, "rgba(255, 255, 255, 0.05)");
+                glassGrad.addColorStop(1, "rgba(0, 0, 0, 0.15)");
+                ctx.fillStyle = glassGrad;
+                ctx.fillRect(0, 0, w, h);
+
+            } else if (style === 'waves') {
+                ctx.fillStyle = "#121212";
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.strokeStyle = "#080808";
+                ctx.lineWidth = 4;
+                ctx.strokeRect(2, 2, w - 4, h - 4);
+
+                let boxX = w * 0.04;
+                let boxY = h * 0.08;
+                let boxW = w * 0.92;
+                let boxH = h * 0.84;
+
+                ctx.save();
+                ctx.fillStyle = "#1c1c1c";
+                ctx.fillRect(boxX, boxY, boxW, boxH);
+
+                let innerPad = 4;
+                let winX = boxX + innerPad;
+                let winY = boxY + innerPad;
+                let winW = boxW - (innerPad * 2);
+                let winH = boxH - (innerPad * 2);
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(winX, winY, winW, winH);
+                ctx.clip();
+
+                let bgGrad = ctx.createLinearGradient(winX, winY, winX, winY + winH);
+                bgGrad.addColorStop(0, "#c2b088");
+                bgGrad.addColorStop(0.35, "#e8d8b4");
+                bgGrad.addColorStop(0.7, "#f7ebd0");
+                bgGrad.addColorStop(1, "#bcab82");
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(winX, winY, winW, winH);
+
+                let lightGrad = ctx.createRadialGradient(winX + winW/2, winY + winH, 10, winX + winW/2, winY + winH, winH * 0.95);
+                lightGrad.addColorStop(0, "rgba(255, 215, 120, 0.75)");
+                lightGrad.addColorStop(0.6, "rgba(255, 170, 50, 0.25)");
+                lightGrad.addColorStop(1, "rgba(200, 120, 0, 0)");
+                ctx.fillStyle = lightGrad;
+                ctx.fillRect(winX, winY, winW, winH);
+
+                let cx = winX + winW / 2;
+                let cy = winY + winH * 1.62;
+                let radius = winH * 1.35;
+
+                ctx.strokeStyle = "#1a160d";
+                ctx.lineWidth = Math.max(1.2, w / 320);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, Math.PI * 1.30, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.lineWidth = 1;
+                for (let a = 1.30; a <= 1.70; a += 0.01) {
+                    let tickLen = (a % 0.05 < 0.005) ? (winH * 0.09) : (winH * 0.05);
+                    let x1 = cx + radius * Math.cos(Math.PI * a);
+                    let y1 = cy + radius * Math.sin(Math.PI * a);
+                    let x2 = cx + (radius - tickLen) * Math.cos(Math.PI * a);
+                    let y2 = cy + (radius - tickLen) * Math.sin(Math.PI * a);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                }
+
+                ctx.strokeStyle = "#d60000";
+                ctx.lineWidth = Math.max(3.2, w / 150);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius - (winH * 0.035), Math.PI * 1.585, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.fillStyle = "#151515";
+                ctx.textAlign = "center";
+                ctx.font = `bold ${Math.round(10 * scaleRatio)}px sans-serif`;
+                let vValues = ["20", "10", "7", "5", "3", "2", "1", "0", "1", "2", "3"];
+                let vAngles = [1.32, 1.38, 1.42, 1.46, 1.50, 1.53, 1.56, 1.59, 1.62, 1.65, 1.68];
+
+                for (let i = 0; i < vValues.length; i++) {
+                    let ang = vAngles[i];
+                    let x = cx + (radius - (winH * 0.28)) * Math.cos(Math.PI * ang);
+                    let y = cy + (radius - (winH * 0.28)) * Math.sin(Math.PI * ang);
+                    ctx.fillText(vValues[i], x, y);
+                }
+
+                ctx.font = `bold ${Math.round(13 * scaleRatio)}px sans-serif`;
+                ctx.fillStyle = "#111";
+                ctx.textAlign = "left";
+                ctx.fillText("VU", winX + winW * 0.08, winY + winH * 0.32);
+
+                let logoY = winY + winH * 0.60;
+                ctx.fillStyle = "#151515";
+                ctx.strokeStyle = "#151515";
+                ctx.lineWidth = 1.5;
+                
+                let triW = 6 * scaleRatio;
+                let triH = 8 * scaleRatio;
+                let triSpacing = 8 * scaleRatio;
+                let startTriX = cx - triSpacing;
+
+                for (let t = 0; t < 3; t++) {
+                    let tx = startTriX + (t * triSpacing);
+                    ctx.beginPath();
+                    ctx.moveTo(tx - triW/2, logoY + triH);
+                    ctx.lineTo(tx, logoY);
+                    ctx.lineTo(tx + triW/2, logoY + triH);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                ctx.textAlign = "center";
+                ctx.font = `bold ${Math.round(11 * scaleRatio)}px sans-serif`;
+                ctx.fillText("WAVES", cx, logoY + triH + 14 * scaleRatio);
+
+                let glassGrad = ctx.createLinearGradient(winX, winY, winX + winW, winY + winH);
+                glassGrad.addColorStop(0, "rgba(255, 255, 255, 0.22)");
+                glassGrad.addColorStop(0.3, "rgba(255, 255, 255, 0.03)");
+                glassGrad.addColorStop(0.6, "rgba(0, 0, 0, 0.02)");
+                glassGrad.addColorStop(1, "rgba(0, 0, 0, 0.25)");
+                ctx.fillStyle = glassGrad;
+                ctx.fillRect(winX, winY, winW, winH);
+
+                ctx.restore();
+
+            } else if (style === 'ashdown') {
+                ctx.fillStyle = "#0c0c0c";
+                ctx.fillRect(0, 0, w, h);
+                let screwRadius = Math.max(3, w / 75);
+                let cornerOffset = Math.max(12, w / 25);
+                [[cornerOffset, cornerOffset], [w - cornerOffset, cornerOffset], [cornerOffset, h - cornerOffset], [w - cornerOffset, h - cornerOffset]].forEach(([sx, sy]) => {
+                    ctx.save();
+                    let sGrad = ctx.createRadialGradient(sx-1, sy-1, 0.5, sx, sy, screwRadius);
+                    sGrad.addColorStop(0, "#888"); sGrad.addColorStop(0.5, "#333"); sGrad.addColorStop(1, "#111");
+                    ctx.fillStyle = sGrad;
+                    ctx.beginPath(); ctx.arc(sx, sy, screwRadius, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = "#000"; ctx.lineWidth = 1; ctx.stroke();
+                    ctx.restore();
+                });
+
+                ctx.save();
+                ctx.beginPath();
+                let marginX = w * 0.08, topY = h * 0.08, bottomY = h * 0.92, cornerRad = 12;
+                ctx.moveTo(marginX + cornerRad, topY);
+                ctx.lineTo(w - marginX - cornerRad, topY);
+                ctx.arcTo(w - marginX, topY, w - marginX, topY + cornerRad, cornerRad);
+                ctx.lineTo(w - marginX, bottomY - cornerRad);
+                ctx.arcTo(w - marginX, bottomY, w - marginX - cornerRad, bottomY, cornerRad);
+                let notchXCenter = w / 2, notchRadius = w * 0.18;
+                ctx.lineTo(notchXCenter + notchRadius, bottomY);
+                ctx.arc(notchXCenter, bottomY, notchRadius, 0, Math.PI, true);
+                ctx.lineTo(marginX + cornerRad, bottomY);
+                ctx.arcTo(marginX, bottomY, marginX, bottomY - cornerRad, cornerRad);
+                ctx.lineTo(marginX, topY + cornerRad);
+                ctx.arcTo(marginX, topY, marginX + cornerRad, topY, cornerRad);
+                ctx.closePath();
+                ctx.clip();
+
+                let bgGrad = ctx.createRadialGradient(w/2, h*0.6, 10, w/2, h*0.6, h * 0.95);
+                bgGrad.addColorStop(0, "#ffc247"); bgGrad.addColorStop(0.4, "#f78e1e"); bgGrad.addColorStop(0.85, "#c65100"); bgGrad.addColorStop(1, "#802b00");
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                let cx = w / 2, cy = h * 1.55, radius = h * 1.25;
+                ctx.strokeStyle = "#1a0800"; ctx.lineWidth = Math.max(1.5, w / 280);
+                ctx.beginPath(); ctx.arc(cx, cy, radius, Math.PI * 1.30, Math.PI * 1.70, false); ctx.stroke();
+
+                ctx.lineWidth = 1.2;
+                for (let a = 1.30; a <= 1.70; a += 0.01) {
+                    let tickLen = (a % 0.05 < 0.005) ? (h * 0.038) : (h * 0.02);
+                    let x1 = cx + radius * Math.cos(Math.PI * a);
+                    let y1 = cy + radius * Math.sin(Math.PI * a);
+                    let x2 = cx + (radius - tickLen) * Math.cos(Math.PI * a);
+                    let y2 = cy + (radius - tickLen) * Math.sin(Math.PI * a);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                }
+
+                ctx.strokeStyle = "#d60000"; ctx.lineWidth = Math.max(3.8, w / 130);
+                ctx.beginPath(); ctx.arc(cx, cy, radius - (h * 0.015), Math.PI * 1.585, Math.PI * 1.70, false); ctx.stroke();
+
+                ctx.fillStyle = "#111"; ctx.textAlign = "center";
+                ctx.font = `bold ${Math.round(11 * scaleRatio)}px sans-serif`;
+                let vValues = ["20", "10", "7", "5", "3", "2", "1", "0", "1", "2", "3"];
+                let vAngles = [1.32, 1.38, 1.42, 1.46, 1.50, 1.53, 1.56, 1.59, 1.62, 1.65, 1.68];
+                for (let i = 0; i < vValues.length; i++) {
+                    let ang = vAngles[i];
+                    let x = cx + (radius - (h * 0.125)) * Math.cos(Math.PI * ang);
+                    let y = cy + (radius - (h * 0.125)) * Math.sin(Math.PI * ang);
+                    ctx.fillText(vValues[i], x, y);
+                }
+
+                ctx.font = `bold ${Math.round(18 * scaleRatio)}px sans-serif`;
+                ctx.fillText("VU", w * 0.18, h * 0.72);
+                ctx.textAlign = "right";
+                ctx.fillText("20SVU", w * 0.82, h * 0.72);
+
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#c80000";
+                ctx.font = `italic bold ${Math.round(23 * scaleRatio)}px "Brush Script MT", cursive`;
+                ctx.fillText("Ashdown", cx, h * 0.52);
+                ctx.restore();
+
+            } else if (style === 'vintage') {
+                let bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+                bgGrad.addColorStop(0, "#e4d5b7");
+                bgGrad.addColorStop(0.5, "#fbf4e2");
+                bgGrad.addColorStop(1, "#c5b38a");
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.strokeStyle = "#554b35";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(4, 4, w - 8, h - 8);
+
+                let cx = w / 2, cy = h * 1.55, radius = h * 1.25;
+                ctx.strokeStyle = "#1a160d"; 
+                ctx.lineWidth = Math.max(1.2, w / 300);
+                ctx.beginPath(); 
+                ctx.arc(cx, cy, radius, Math.PI * 1.30, Math.PI * 1.70, false); 
+                ctx.stroke();
+
+                ctx.lineWidth = 1;
+                for (let a = 1.30; a <= 1.70; a += 0.01) {
+                    let tickLen = (a % 0.05 < 0.005) ? (h * 0.04) : (h * 0.02);
+                    let x1 = cx + radius * Math.cos(Math.PI * a);
+                    let y1 = cy + radius * Math.sin(Math.PI * a);
+                    let x2 = cx + (radius - tickLen) * Math.cos(Math.PI * a);
+                    let y2 = cy + (radius - tickLen) * Math.sin(Math.PI * a);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                }
+
+                ctx.strokeStyle = "#cc0000";
+                ctx.lineWidth = Math.max(3.0, w / 160);
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius - (h * 0.02), Math.PI * 1.585, Math.PI * 1.70, false);
+                ctx.stroke();
+
+                ctx.fillStyle = "#111"; 
+                ctx.textAlign = "center";
+                ctx.font = `bold ${Math.round(11 * scaleRatio)}px sans-serif`;
+                let vValues = ["20", "10", "7", "5", "3", "2", "1", "0", "1", "2", "3"];
+                let vAngles = [1.32, 1.38, 1.42, 1.46, 1.50, 1.53, 1.56, 1.59, 1.62, 1.65, 1.68];
+                for (let i = 0; i < vValues.length; i++) {
+                    let ang = vAngles[i];
+                    let x = cx + (radius - (h * 0.13)) * Math.cos(Math.PI * ang);
+                    let y = cy + (radius - (h * 0.13)) * Math.sin(Math.PI * ang);
+                    ctx.fillText(vValues[i], x, y);
+                }
+
+                ctx.font = `bold ${Math.round(14 * scaleRatio)}px sans-serif`;
+                ctx.textAlign = "left";
+                ctx.fillText("VU", w * 0.15, h * 0.35);
+
+                let glassGrad = ctx.createLinearGradient(0, 0, w, h);
+                glassGrad.addColorStop(0, "rgba(255, 255, 255, 0.25)");
+                glassGrad.addColorStop(0.4, "rgba(255, 255, 255, 0.05)");
+                glassGrad.addColorStop(1, "rgba(0, 0, 0, 0.15)");
+                ctx.fillStyle = glassGrad;
+                ctx.fillRect(0, 0, w, h);
+
+            } else if (style === 'technics') {
+                // TECHNICS VFD PEAK METER (FLUORESCENT SEGMENT BAR)
+                ctx.fillStyle = "#080808";
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.strokeStyle = "#1a1a1a";
+                ctx.lineWidth = 3;
+                ctx.strokeRect(3, 3, w - 6, h - 6);
+
+                ctx.fillStyle = "#121212";
+                ctx.fillRect(w * 0.1, h * 0.15, w * 0.8, h * 0.7);
+
+                ctx.strokeStyle = "#222";
+                ctx.lineWidth = 1;
+                ctx.strokeRect(w * 0.1, h * 0.15, w * 0.8, h * 0.7);
+
+                ctx.fillStyle = "#00e5ff";
+                ctx.font = `bold ${Math.round(9 * scaleRatio)}px sans-serif`;
+                ctx.textAlign = "left";
+                ctx.fillText("PEAK LEVEL METER", w * 0.12, h * 0.28);
+                ctx.fillText("-30 -20  -10   -6   -3    0   +3  +6", w * 0.12, h * 0.38);
+
+            } else {
+                // MCINTOSH AUTHENTIC HIGH-POWER STYLE (WATTS & DECIBELS)
+                let bgGrad = ctx.createRadialGradient(w/2, h*0.45, 10, w/2, h*0.5, h * 1.15);
+                bgGrad.addColorStop(0, "#2fb2ff");
+                bgGrad.addColorStop(0.45, "#1066c0");
+                bgGrad.addColorStop(1, "#05204a");
+                ctx.fillStyle = bgGrad; 
+                ctx.fillRect(0, 0, w, h);
+
+                let cx = w / 2, cy = h * 1.62, radius = h * 1.32;
+                ctx.strokeStyle = "#ffffff"; 
+                ctx.lineWidth = Math.max(1.4, w / 280);
+                ctx.beginPath(); 
+                ctx.arc(cx, cy, radius, Math.PI * 1.28, Math.PI * 1.72, false); 
+                ctx.stroke();
+
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = "#ffffff";
+                for (let a = 1.28; a <= 1.72; a += 0.008) {
+                    let isMajor = (Math.abs((a % 0.04)) < 0.002 || Math.abs((a % 0.04) - 0.04) < 0.002);
+                    let tickLen = isMajor ? (h * 0.042) : (h * 0.02);
+                    let x1 = cx + radius * Math.cos(Math.PI * a);
+                    let y1 = cy + radius * Math.sin(Math.PI * a);
+                    let x2 = cx + (radius - tickLen) * Math.cos(Math.PI * a);
+                    let y2 = cy + (radius - tickLen) * Math.sin(Math.PI * a);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                }
+
+                ctx.fillStyle = "#ffffff"; 
+                ctx.textAlign = "center";
+                ctx.font = `bold ${Math.round(11 * scaleRatio)}px sans-serif`;
+                ctx.fillText("WATTS", cx, h * 0.18);
+
+                ctx.font = `${Math.round(10 * scaleRatio)}px sans-serif`;
+                ctx.fillText("DECIBELS", cx, h * 0.44);
+
+                ctx.font = `${Math.round(10 * scaleRatio)}px sans-serif`;
+                ctx.fillText("POWER OUTPUT", cx, h * 0.60);
+
+                let mcWatts = ["6.0m", "60m", ".60", "6.0", "60", "600", "1.2K", "2.4K"];
+                let mcWattsAngles = [1.32, 1.38, 1.44, 1.50, 1.56, 1.62, 1.67, 1.70];
+                ctx.font = `bold ${Math.round(14 * scaleRatio)}px sans-serif`;
+                for (let i = 0; i < mcWatts.length; i++) {
+                    let ang = mcWattsAngles[i];
+                    let x = cx + (radius - (h * 0.14)) * Math.cos(Math.PI * ang);
+                    let y = cy + (radius - (h * 0.14)) * Math.sin(Math.PI * ang);
+                    if (i >= 6) {
+                        ctx.save();
+                        ctx.translate(x, y);
+                        ctx.rotate(0.35);
+                        ctx.fillText(mcWatts[i], 0, 0);
+                        ctx.restore();
+                    } else {
+                        ctx.fillText(mcWatts[i], x, y);
+                    }
+                }
+
+                let mcDb = ["-50", "-40", "-30", "-20", "-10", "0"];
+                let mcDbAngles = [1.32, 1.40, 1.48, 1.56, 1.62, 1.69];
+                ctx.font = `${Math.round(10 * scaleRatio)}px sans-serif`;
+                for (let i = 0; i < mcDb.length; i++) {
+                    let ang = mcDbAngles[i];
+                    let x = cx + (radius + (h * 0.09)) * Math.cos(Math.PI * ang);
+                    let y = cy + (radius + (h * 0.09)) * Math.sin(Math.PI * ang);
+                    ctx.fillText(mcDb[i], x, y);
+                }
+
+                let glassGrad = ctx.createLinearGradient(0, 0, w, h);
+                glassGrad.addColorStop(0, "rgba(255, 255, 255, 0.22)");
+                glassGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.03)");
+                glassGrad.addColorStop(1, "rgba(0, 0, 0, 0.35)");
+                ctx.fillStyle = glassGrad;
+                ctx.fillRect(0, 0, w, h);
+            }
+        }
+
+        function drawNeedle(ctx, value, style) {
+            drawFace(ctx, style);
+            
+            const w = ctx.canvas.width;
+            const h = ctx.canvas.height;
+
+            if (style === 'technics') {
+                // RENDER VFD SEGMENTED LED BARS
+                let numSegments = 24;
+                let startX = w * 0.14;
+                let startY = h * 0.52;
+                let totalW = w * 0.72;
+                let segW = (totalW / numSegments) - 3;
+                let segH = h * 0.22;
+
+                let activeSegments = Math.floor((value / 255) * numSegments);
+                if (activeSegments > numSegments) activeSegments = numSegments;
+
+                for (let s = 0; s < numSegments; s++) {
+                    let x = startX + s * (segW + 3);
+                    if (s < activeSegments) {
+                        if (s < numSegments * 0.65) ctx.fillStyle = "#00e676"; // Verde
+                        else if (s < numSegments * 0.85) ctx.fillStyle = "#ffea00"; // Giallo
+                        else ctx.fillStyle = "#ff1744"; // Rosso picco
+                        ctx.shadowColor = ctx.fillStyle;
+                        ctx.shadowBlur = 8;
+                    } else {
+                        ctx.fillStyle = "#18201a";
+                        ctx.shadowBlur = 0;
+                    }
+                    ctx.fillRect(x, startY, segW, segH);
+                }
+                ctx.shadowBlur = 0;
+                return;
+            }
+
+            let cx = w / 2;
+            let cy, radius;
+
+            if (style === 'ashdown' || style === 'vintage' || style === 'picore' || style === 'accuphase' || style === 'revox' || style === 'luxman') {
+                cy = h * 1.55; 
+                radius = h * 1.25;
+            } else if (style === 'waves') {
+                let boxY = h * 0.08;
+                let boxH = h * 0.84;
+                let innerPad = 4;
+                let winY = boxY + innerPad;
+                let winH = boxH - (innerPad * 2);
+                cy = winY + winH * 1.62;
+                radius = winH * 1.35;
+            } else {
+                cy = h * 1.62; 
+                radius = h * 1.32;
+            }
+
+            let angleVal = 1.32 + (value / 255) * 0.38;
+            if (angleVal > 1.70) angleVal = 1.70;
+
+            ctx.save();
+            ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
+            ctx.shadowBlur = 5;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+
+            ctx.strokeStyle = (style === 'mcintosh') ? "#f5f5f5" : "#111111";
+            ctx.lineWidth = Math.max(1.3, w / 280);
+            
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + (radius + (h * 0.16)) * Math.cos(Math.PI * angleVal), cy + (radius + (h * 0.16)) * Math.sin(Math.PI * angleVal));
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+            ctx.shadowBlur = 6;
+            ctx.fillStyle = "#111";
+            ctx.beginPath();
+            ctx.arc(cx, cy, Math.max(4.5, w / 42), 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = "#444";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            ctx.fillStyle = "#888";
+            ctx.beginPath();
+            ctx.arc(cx - 1.5, cy - 1.5, Math.max(1, w / 150), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        const dataArray = new Uint8Array(128);
+        let smoothedL = 0;
+        let smoothedR = 0;
+        let fallbackCounter = 0;
+
+        function updateMeters() {
+            requestAnimationFrame(updateMeters);
+            
+            if (isInitialized && !audio.paused && audio.readyState >= 2) {
+                if (!corsFallbackMode && analyser) {
+                    analyser.getByteFrequencyData(dataArray);
+                    let targetL = dataArray[4];
+                    let targetR = dataArray[12];
+                    
+                    smoothedL += (targetL - smoothedL) * 0.25;
+                    smoothedR += (targetR - smoothedR) * 0.25;
+                } else {
+                    fallbackCounter += 0.15;
+                    let targetL = 40 + Math.sin(fallbackCounter * 1.3) * 35 + Math.random() * 45;
+                    let targetR = 40 + Math.cos(fallbackCounter * 1.7) * 35 + Math.random() * 45;
+
+                    smoothedL += (targetL - smoothedL) * 0.15;
+                    smoothedR += (targetR - smoothedR) * 0.15;
+                }
+            } else {
+                smoothedL += (0 - smoothedL) * 0.1;
+                smoothedR += (0 - smoothedR) * 0.1;
+            }
+            
+            let currentStyle = styleSelect.value;
+            drawNeedle(ctxL, smoothedL, currentStyle);
+            drawNeedle(ctxR, smoothedR, currentStyle);
+        }
+
+        updateMeters();
+    </script>
+</body>
+</html>
